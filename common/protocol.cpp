@@ -37,3 +37,17 @@ protocol::protocol()
 protocol::~protocol()
 {
 }
+
+//Decode the morse code string into ascii characters.
+std::string protocol::deCodeMorse(std::vector<std::string> morse)
+{
+	std::string decoded;
+
+	//Iterate through vector each string is one morse character.
+	for (size_t i = 0; i < morse.size(); i++)
+	{
+		decoded.push_back(binToChar[morse[i]]);
+	}
+
+	return decoded;
+}

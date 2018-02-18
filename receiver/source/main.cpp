@@ -10,13 +10,25 @@
 
   MicroBit uBit;
   MicroBitSerial serial(USBTX, USBRX);
+  //TODO 1. IMPLEMENT DECODING methods below.
+  //     2. Output decoded string on microbit.
+  /*
+//Decode the morse code string into ascii characters.
+std::string protocol::deCodeMorse(std::vector<std::string> morse)
+{
+	std::string decoded;
+
+	//Iterate through vector each string is one morse character.
+	for (size_t i = 0; i < morse.size(); i++)
+	{
+		decoded.push_back(binToChar[morse[i]]);
+	}
+
+	return decoded;
+}
+*/
 
 
-
-
-  //FUNCTION PROTOTYPES
-
-  //END OF FUNCTION PROTOTYPES
 
 MicroBitPin P2(MICROBIT_ID_IO_P2, MICROBIT_PIN_P2, PIN_CAPABILITY_DIGITAL);
   int main()
