@@ -40,7 +40,7 @@ MicroBitPin P2(MICROBIT_ID_IO_P2, MICROBIT_PIN_P2, PIN_CAPABILITY_DIGITAL);
     //Every "tick" of this receiver the pins are read and either of these counters are incremented.
     int digLo =0;
     int digHi =0;
-    bool space = false;
+
     //Decoded morse message, needs to be decoded again into ascii.
     std::string deMsg;
 
@@ -49,33 +49,27 @@ MicroBitPin P2(MICROBIT_ID_IO_P2, MICROBIT_PIN_P2, PIN_CAPABILITY_DIGITAL);
     {
       if(P2.getDigitalValue() == 1)
       {
-        uBit.display.print("1");
-        digHi++;
-
-        if(digHi == 3)
+        //If 3 dots in a row with no space then its a dash.
+        if(digHi > 2)
         {
-          uBit.display.print("A");
+          uBit.display.print("-");
           digHi = 0;
         }
+        else
+        {
+          //Add a dot to the string
+          uBit.display.print(".");
+          digHi++;
+        }
+
       }
 
       if(P2.getDigitalValue() == 0)
       {
-        uBit.display.print("0");
-        digLo++;
         //Add a space
-        if((digLo == 1) && (space == false))
-        {
-          uBit.display.print("-");
-          space = true;
-          digLo = 0;
-        }
-        if(digLo >= 2)
-        {
-          uBit.display.print("B");
-          digLo = 0;
-          space = false;
-        }
+        uBit.display.print("s");
+        digLo++;
+
       }
 
       //uint64_t delta = system_timer_current_time() - reading;
