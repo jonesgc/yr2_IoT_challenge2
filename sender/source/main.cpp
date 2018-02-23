@@ -47,18 +47,19 @@ MicroBitPin P1(MICROBIT_ID_IO_P1, MICROBIT_PIN_P1, PIN_CAPABILITY_DIGITAL);
               //geater than a second = dash (a three ones)
               if (delta > 1000)
               { // > 1 sec
-                  uBit.display.print("1");
+                  uBit.display.print("-");
                   P1.setDigitalValue(1);
                   uBit.sleep(1500);
               }
               //A dot, a single 1 for a single time unit(500ms)
               else
               {
+                uBit.display.print(".");
                 P1.setDigitalValue(1);
-                ubit.sleep(500);
+                uBit.sleep(500);
               }
 
-
+              uBit.setDigitalValue(0);
               pressed = false;
               uBit.display.clear();
           }
