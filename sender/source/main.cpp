@@ -59,10 +59,12 @@ MicroBitPin P1(MICROBIT_ID_IO_P1, MICROBIT_PIN_P1, PIN_CAPABILITY_DIGITAL);
                 uBit.sleep(500);
               }
 
-              uBit.setDigitalValue(0);
               pressed = false;
               uBit.display.clear();
           }
+
+          P1.setDigitalValue(0);
+          uBit.sleep(500);
       }
 
 

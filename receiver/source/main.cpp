@@ -50,7 +50,7 @@ MicroBitPin P2(MICROBIT_ID_IO_P2, MICROBIT_PIN_P2, PIN_CAPABILITY_DIGITAL);
       if(P2.getDigitalValue() == 1)
       {
         //If 3 dots in a row with no space then its a dash.
-        if(digHi > 2)
+        if(digHi >= 3)
         {
           uBit.display.print("-");
           digHi = 0;
@@ -64,12 +64,15 @@ MicroBitPin P2(MICROBIT_ID_IO_P2, MICROBIT_PIN_P2, PIN_CAPABILITY_DIGITAL);
 
       }
 
-      if(P2.getDigitalValue() == 0)
+      if(digLo >= 7)
+      {
+        uBit.display.print("End of message");
+      }
+      else
       {
         //Add a space
         uBit.display.print("s");
         digLo++;
-
       }
 
       //uint64_t delta = system_timer_current_time() - reading;
