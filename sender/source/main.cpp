@@ -1,7 +1,7 @@
   //Author: Gregory Jones
   //This is the main file for Challenge 2 submission.
   //See readme.md for more infomation
-  //Project Start Date: 29/01/2018
+  //Project Start Date: 17/02/2018
 
   //START OF CODE
   #include "MicroBit.h"
@@ -9,21 +9,20 @@
   MicroBit uBit;
   MicroBitSerial serial(USBTX, USBRX);
 
-
+  bool msg;
 
   //FUNCTION PROTOTYPES
-
+  void messageStart(MicroBitEvent e);
   //END OF FUNCTION PROTOTYPES
 
-MicroBitButton buttonA(MICROBIT_PIN_BUTTON_A, MICROBIT_ID_BUTTON_A);
+  MicroBitButton buttonA(MICROBIT_PIN_BUTTON_A, MICROBIT_ID_BUTTON_A);
 
-MicroBitPin P1(MICROBIT_ID_IO_P1, MICROBIT_PIN_P1, PIN_CAPABILITY_DIGITAL);
+  MicroBitPin P1(MICROBIT_ID_IO_P1, MICROBIT_PIN_P1, PIN_CAPABILITY_DIGITAL);
 
   int main()
   {
     // Initialise the micro:bit runtime.
     uBit.init();
-
 
     bool pressed = false;
 
@@ -44,14 +43,14 @@ MicroBitPin P1(MICROBIT_ID_IO_P1, MICROBIT_PIN_P1, PIN_CAPABILITY_DIGITAL);
           //if button was pressed
           if (pressed)
           {
-              //geater than a second = dash (a three ones)
+              //Geater than a second = dash (hold on for three tu).
               if (delta > 1000)
-              { // > 1 sec
+              {
                   uBit.display.print("-");
                   P1.setDigitalValue(1);
                   uBit.sleep(1500);
               }
-              //A dot, a single 1 for a single time unit(500ms)
+              //A dot, a single 1 for a single tu.
               else
               {
                 uBit.display.print(".");
@@ -83,6 +82,5 @@ MicroBitPin P1(MICROBIT_ID_IO_P1, MICROBIT_PIN_P1, PIN_CAPABILITY_DIGITAL);
   }
 
   //FUNCTIONS
-
   //END OF FUNCTIONS
   //END OF CODE
