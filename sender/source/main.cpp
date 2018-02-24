@@ -25,7 +25,7 @@
     uBit.init();
 
     bool pressed = false;
-
+    serial.baud(115200);
       while(1)
       {
           // read current number of milliseconds
@@ -60,14 +60,11 @@
 
               pressed = false;
               uBit.display.clear();
+              P1.setDigitalValue(0);
           }
-
-          P1.setDigitalValue(0);
-          uBit.sleep(500);
       }
 
 
-    //END OF PRE-GAME INITALISATION
 
     //SERIAL DEBUG
     //serial debugging statements

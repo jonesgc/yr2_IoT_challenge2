@@ -5,7 +5,7 @@
 
   //START OF CODE
   #include "MicroBit.h"
-  #include <string>
+  #include <vector>
   #include "../common/protocol.h"
 
   MicroBit uBit;
@@ -40,38 +40,33 @@ MicroBitPin P2(MICROBIT_ID_IO_P2, MICROBIT_PIN_P2, PIN_CAPABILITY_DIGITAL);
     //Every "tick" of this receiver the pins are read and either of these counters are incremented.
     int digLo =0;
     int digHi =0;
-    bool msg = false;
     //Decoded morse message, needs to be decoded again into ascii.
-    std::string deMsg;
-
+    std::vector<char> deMsg;
+    deMsg.push_back('|');
     //uint64_t reading = system_timer_current_time();
-    while(1)
-    {
-      if(P2.getDigitalValue() == 1)
-      {
-        msg = true;
-        digHi = 0;
-        digLo = 0;
-      }
 
     //Message Loop.
-    while(msg == true)
+    while(1)
     {
       if(P2.getDigitalValue() == 1)
       {
         //If 3 dots in a row with no space then its a dash.
         if(digHi >= 3)
         {
-          uBit.display.print("-");
-          uBit.sleep(500);
+          //uBit.display.print("-");
+          deMsg.push_back('-');
+          //uBit.sleep(500);
           digHi = 0;
+          digLo = 0;
         }
         else
         {
           //Add a dot to the string
-          uBit.display.print(".");
-          uBit.sleep(500);
+          //uBit.display.print(".");
+          deMsg.push_back('.');
+          //uBit.sleep(500);
           digHi++;
+          digLo = 0;
         }
 
       }
@@ -79,27 +74,22 @@ MicroBitPin P2(MICROBIT_ID_IO_P2, MICROBIT_PIN_P2, PIN_CAPABILITY_DIGITAL);
       if(digLo >= 7)
       {
         uBit.display.print("End of message");
-        msg = false;
-        break;
+        deMsg.push_back('|');
       }
       else
       {
         //Add a space
-        uBit.display.print("s");
-        uBit.sleep(500);
+        //uBit.display.print("s");
+        deMsg.push_back('0');
+        //uBit.sleep(500);
         digLo++;
       }
-
-      //uint64_t delta = system_timer_current_time() - reading;
-
-      //serial.baud(115200);
-      //serial.send(int(delta));
 
       //Time Unit is 500 milliseconds.
       uBit.display.clear();
       uBit.sleep(500);
     }
-  }
+
   }
   //END OF FUNCTIONS
   //END OF CODE

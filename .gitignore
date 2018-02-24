@@ -10,3 +10,9 @@ receiver/build/
 receiver/yotta_modules/
 
 receiver/yotta_targets/
+
+packets/build/
+
+packets/yotta_targets/
+
+packets/yotta_modules/
