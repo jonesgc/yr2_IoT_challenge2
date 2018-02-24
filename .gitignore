@@ -1,0 +1,12 @@
+
+sender/build/
+
+sender/yotta_modules/
+
+sender/yotta_targets/
+
+receiver/build/
+
+receiver/yotta_modules/
+
+receiver/yotta_targets/

@@ -1,0 +1,11 @@
+{
+  "name": "challenge2-receiver",
+  "version": "1.0.0",
+  "description": "g45-jones Challenge 2",
+  "license": "MIT",
+  "dependencies": {
+    "microbit": "lancaster-university/microbit"
+  },
+  "targetDependencies": {},
+  "bin": "./source"
+}
