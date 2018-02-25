@@ -16,7 +16,13 @@ public:
 
   std::map <int, char> binToChar;
 
-  //Decode the morse string into characters.
-	std::string deCodeMorse(std::vector<std::string>);
+  //Find Ascii character for given binary literal.
+  char lookUp(int);
+
+  //Encrypt a binary literal via XOR.
+  int encryptAndDecrypt(int);
+
+  //Encrypt/Decrypt a message.
+  std::vector<int>encryptMsg(std::vector<int>);
 };
 #endif

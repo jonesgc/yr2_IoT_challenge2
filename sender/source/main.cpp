@@ -25,6 +25,7 @@
     bool input = true;
     bool aPress = false;
 
+    std::vector<int>
     serial.baud(115200);
       while(1)
       {

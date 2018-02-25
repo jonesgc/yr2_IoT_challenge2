@@ -39,16 +39,28 @@ protocol::~protocol()
 {
 }
 
-//Decode the morse code string into ascii characters.
-std::string protocol::deCodeMorse(std::vector<std::string> morse)
+//This requires binary literal to be in morse compliance.
+protocol::lookUp(int morse)
 {
-	std::string decoded;
+	char temp = binToChar[morse];
+	return temp;
+}
 
-	//Iterate through vector each string is one morse character.
-	for (size_t i = 0; i < morse.size(); i++)
+protocol::encryptAndDecrypt(int morse)
+{
+	int key [2] = {0b00100001, 0b00100010};
+	int encrypted = morse;
+	encrypted = encrypted ^ key [1];
+	return encrypted;
+}
+
+protocol::encryptMsg(std::vector <int>msg)
+{
+	std::vector<int>encryptedMsg;
+
+	for (size_t i = 0; i < msg.size(); i++)
 	{
-		decoded.push_back(binToChar[morse[i]]);
+		encryptedMsg.push_back(encryptAndDecrypt(msg[i]));
 	}
-
-	return decoded;
+	return encryptedMsg;
 }

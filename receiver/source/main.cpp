@@ -34,7 +34,6 @@ MicroBitPin P2(MICROBIT_ID_IO_P2, MICROBIT_PIN_P2, PIN_CAPABILITY_DIGITAL);
     while(1)
     {
 
-
     while(msg == true)
     {
       serial.baud(115200);
@@ -64,9 +63,10 @@ MicroBitPin P2(MICROBIT_ID_IO_P2, MICROBIT_PIN_P2, PIN_CAPABILITY_DIGITAL);
 
       if(P2.getDigitalValue() == 0)
       {
-        if(digLo >= 7)
+        //End of Message
+        if(digLo >= 10)
         {
-          uBit.display.print("C");
+          uBit.display.print("E");
           uBit.sleep(500);
           msg = false;
           break;
