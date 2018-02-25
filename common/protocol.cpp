@@ -6,31 +6,32 @@ protocol::protocol()
 {
   //Mapping binary values to characters.
   //Using international Morse code mapping.
-	binToChar["01"] = 'A';
-	binToChar["1000"] = 'B';
-	binToChar["1010"] = 'C';
-	binToChar["100"] = 'D';
-	binToChar["0"] = 'E';
-	binToChar["0010"] = 'F';
-	binToChar["110"] = 'G';
-	binToChar["0000"] = 'H';
-	binToChar["00"] = 'I';
-	binToChar["0111"] = 'J';
-	binToChar["101"] = 'K';
-	binToChar["0100"] = 'L';
-	binToChar["11"] = 'M';
-	binToChar["10"] = 'N';
-	binToChar["111"] = 'O';
-	binToChar["0110"] = 'P';
-	binToChar["1101"] = 'Q';
-	binToChar["101"] = 'R';
-	binToChar["1"] = 'T';
-	binToChar["001"] = 'U';
-	binToChar["0001"] = 'V';
-	binToChar["011"] = 'W';
-	binToChar["1001"] = 'X';
-	binToChar["1011"] = 'Y';
-	binToChar["1100"] = 'Z';
+	binToChar[0b01] = 'A';
+	binToChar[0b1000] = 'B';
+	binToChar[0b1010] = 'C';
+	binToChar[0b100] = 'D';
+	binToChar[0b0] = 'E';
+	binToChar[0b0010] = 'F';
+	binToChar[0b110] = 'G';
+	binToChar[0b0000] = 'H';
+	binToChar[0b00] = 'I';
+	binToChar[0b0111] = 'J';
+	binToChar[0b101] = 'K';
+	binToChar[0b0100] = 'L';
+	binToChar[0b11] = 'M';
+	binToChar[0b10] = 'N';
+	binToChar[0b111] = 'O';
+	binToChar[0b0110] = 'P';
+	binToChar[0b1101] = 'Q';
+	binToChar[0b101] = 'R';
+	binToChar[0b1] = 'T';
+	binToChar[0b001] = 'U';
+	binToChar[0b0001] = 'V';
+	binToChar[0b011] = 'W';
+	binToChar[0b1001] = 'X';
+	binToChar[0b1011] = 'Y';
+	binToChar[0b1100] = 'Z';
+
 }
 
 //Destructor.

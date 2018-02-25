@@ -14,7 +14,7 @@ public:
   //Destructor
   ~protocol();
 
-  std::map <std::string, char> binToChar;
+  std::map <int, char> binToChar;
 
   //Decode the morse string into characters.
 	std::string deCodeMorse(std::vector<std::string>);
