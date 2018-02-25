@@ -29,6 +29,7 @@ MicroBitPin P2(MICROBIT_ID_IO_P2, MICROBIT_PIN_P2, PIN_CAPABILITY_DIGITAL);
 
     //Binary String from pin.
     std::vector<int> binStr;
+
     while(1)
     {
 

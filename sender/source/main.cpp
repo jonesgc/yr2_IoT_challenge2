@@ -9,7 +9,6 @@
   MicroBit uBit;
   MicroBitSerial serial(USBTX, USBRX);
 
-  bool msg;
 
   //FUNCTION PROTOTYPES
   void messageStart(MicroBitEvent e);
@@ -23,8 +22,9 @@
   {
     // Initialise the micro:bit runtime.
     uBit.init();
+    bool input = true;
+    bool aPress = false;
 
-    bool pressed = false;
     serial.baud(115200);
       while(1)
       {
@@ -34,31 +34,34 @@
           // loop while button A pressed
           while (buttonA.isPressed())
           {
-              pressed = true;
+              aPress = true;
           }
 
           // time of loop execution
           uint64_t delta = system_timer_current_time() - reading;
 
           //if button was pressed
-          if (pressed)
+          if (aPress)
           {
               //Geater than a second = dash (hold on for three tu).
-              if (delta > 1000)
+              if ((delta > 1000) && (input))
               {
                   uBit.display.print("-");
                   P1.setDigitalValue(1);
+                  input = false;
                   uBit.sleep(1500);
               }
               //A dot, a single 1 for a single tu.
-              else
+              else if(input)
               {
                 uBit.display.print(".");
                 P1.setDigitalValue(1);
+                input = false;
                 uBit.sleep(500);
               }
 
-              pressed = false;
+              aPress = false;
+              input = true;
               uBit.display.clear();
               P1.setDigitalValue(0);
           }
