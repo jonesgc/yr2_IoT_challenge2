@@ -26,16 +26,16 @@ int main()
   // Initialise the micro:bit runtime.
   uBit.init();
 
-  bool sender = false;
-
-  //Message storage vectors.
-  std::vector<char> decoded;
-  std::vector<char> ascii;
-
   decoder decoder;
   //Wrapper that allows user to switch between send/recieve
   while(1)
   {
+    bool sender = false;
+
+    //Message storage vectors.
+    std::vector<char> decoded;
+    std::vector<char> ascii;
+
     //Sender. The microbit that the button was pressed on switches into this state.
     //The receiver microbit gets a handshake that tells it to move into receiver state.
     if (buttonB.isPressed())
@@ -44,7 +44,7 @@ int main()
       sender = true;
       //Send Handshake to change other microbit into receiver state.
       P1.setDigitalValue(1);
-      uBit.sleep(2000);
+      uBit.sleep(500);
       P1.setDigitalValue(0);
       uBit.display.clear();
       bool input = true;
@@ -115,8 +115,6 @@ int main()
 
     int baseRead = 0;
     int delta = 0;
-    //Decoded morse message, needs to be decoded again into ascii.
-    std::vector<char> deMsg;
 
     //Binary String from pin.
     std::vector<int> binStr;
@@ -147,14 +145,24 @@ int main()
           }
 
           delta = system_timer_current_time() - baseRead;
-          if(delta > 1000)
+          if(delta >= 1000)
           {
             uBit.display.print("-");
+            binStr.push_back(1);
+            binStr.push_back(1);
+            binStr.push_back(1);
+            serial.baud(115200);
+            serial.send(1);
+            serial.send(1);
+            serial.send(1);
             uBit.sleep(500);
           }
-          else if (delta > 500)
+          else if (delta >= 500)
           {
+            binStr.push_back(1);
             uBit.display.print(".");
+            serial.baud(115200);
+            serial.send(1);
             uBit.sleep(500);
           }
           digLo=0;
@@ -168,6 +176,9 @@ int main()
           {
             uBit.display.print("0");
             digLo++;
+            binStr.push_back(0);
+            serial.baud(115200);
+            serial.send(0);
             uBit.sleep(500);
             break;
           }
@@ -179,6 +190,13 @@ int main()
             uBit.sleep(500);
             msg = false;
             test = false;
+            decoded = decoder.decodeDigital(binStr);
+            for (size_t i = 0; i < decoded.size(); i++)
+            {
+              uBit.display.print(decoded[i]);
+
+              uBit.sleep(500);
+            }
             break;
           }
           uBit.display.clear();
