@@ -16,3 +16,9 @@ packets/build/
 packets/yotta_targets/
 
 packets/yotta_modules/
+
+combined/build/
+
+combined/yotta_modules/
+
+combined/yotta_targets/

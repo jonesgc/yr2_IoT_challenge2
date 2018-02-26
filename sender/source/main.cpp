@@ -11,7 +11,6 @@
 
 
   //FUNCTION PROTOTYPES
-  void messageStart(MicroBitEvent e);
   //END OF FUNCTION PROTOTYPES
 
   MicroBitButton buttonA(MICROBIT_PIN_BUTTON_A, MICROBIT_ID_BUTTON_A);
@@ -25,7 +24,6 @@
     bool input = true;
     bool aPress = false;
 
-    std::vector<int>
     serial.baud(115200);
       while(1)
       {
