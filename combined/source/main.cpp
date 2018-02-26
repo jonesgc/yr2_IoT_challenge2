@@ -19,6 +19,7 @@ MicroBitButton buttonA(MICROBIT_PIN_BUTTON_A, MICROBIT_ID_BUTTON_A);
 MicroBitButton buttonB(MICROBIT_PIN_BUTTON_B, MICROBIT_ID_BUTTON_B);
 
 MicroBitPin P1(MICROBIT_ID_IO_P1, MICROBIT_PIN_P1, PIN_CAPABILITY_DIGITAL);
+MicroBitPin P2(MICROBIT_ID_IO_P2, MICROBIT_PIN_P2, PIN_CAPABILITY_DIGITAL);
 
 int main()
 {
@@ -106,118 +107,86 @@ int main()
         }
     }
 
-    //Listen to P1 for handshake.
-    bool hTest = false;
+    //Character counter used to aquire the morse character from the digital signal.
+    //Every "tick" of this receiver the pins are read and either of these counters are incremented.
+    int digLo =0;
+    int digHi =0;
+    bool msg = false;
 
-    //Check for valid hand shake.
-    for (size_t i = 0; i < 5; i++)
+    int baseRead = 0;
+    int delta = 0;
+    //Decoded morse message, needs to be decoded again into ascii.
+    std::vector<char> deMsg;
+
+    //Binary String from pin.
+    std::vector<int> binStr;
+    bool test=false;
+    uBit.display.print("W");
+    //Listen to P2 for signal
+    if(P2.getDigitalValue()==1)
     {
-      if(P1.getDigitalValue()==1)
-      {
-        uBit.display.print('H');
-        hTest = true;
-      }
-      else
-      {
-        uBit.display.print('W');
-      }
+      test = true;
+      uBit.display.print("L");
       uBit.sleep(500);
-      uBit.display.clear();
     }
 
-    //Handshake is valid enter receiver state.
-
-    if(hTest)
+    if(test)
     {
+      msg = true;
+      while(msg == true)
+      {
+        // read current number of milliseconds
+        baseRead = system_timer_current_time();
 
-          //Character counter used to aquire the morse character from the digital signal.
-          //Every "tick" of this receiver the pins are read and either of these counters are incremented.
-          int digLo =0;
-          int digHi =0;
-          bool msg = false;
-          //Decoded morse message, needs to be decoded again into ascii.
-          std::vector<char> deMsg;
-
-          //Binary String from pin.
-          std::vector<int> binStr;
-
-          while(1)
+        if(P2.getDigitalValue() == 1)
+        {
+          //Measure how long pin was either on or off for.
+          while(P2.getDigitalValue() == 1)
           {
-
-          while(msg == true)
-          {
-            serial.baud(115200);
-            if(P1.getDigitalValue() == 1)
-            {
-              //If 3 dots in a row with no space then its a dash.
-              if(digHi > 2)
-              {
-                uBit.display.print("-");
-                binStr.push_back(1);
-                binStr.push_back(1);
-                binStr.push_back(1);
-                serial.send('1');
-                uBit.sleep(500);
-                digHi = 0;
-                digLo = 0;
-              }
-              else
-              {
-                //Add a dot to the string
-                uBit.display.print(".");
-                binStr.push_back(1);
-                serial.send('1');
-                uBit.sleep(500);
-                digHi++;
-                digLo = 0;
-              }
-            }
-
-            if(P1.getDigitalValue() == 0)
-            {
-              //End of Message
-              if(digLo >= 10)
-              {
-                uBit.display.print("E");
-                uBit.sleep(500);
-                msg = false;
-                decoded.push_back('|');
-                //Decode digital message into morse.
-                decoded = decoder.decodeDigital(binStr);
-                for (size_t i = 0; i < decoded.size(); i++)
-                {
-                  serial.baud(115200);
-                  serial.send(decoded[i]);
-                }
-                break;
-              }
-              uBit.display.print("0");
-              binStr.push_back(0);
-              serial.send('0');
-              uBit.sleep(500);
-              digLo++;
-            }
-
-            //Time Unit is 500 milliseconds.
-            uBit.display.clear();
+            uBit.display.print("1");
           }
 
-          //Waiting for a signal.
-          while(msg == false)
+          delta = system_timer_current_time() - baseRead;
+          if(delta > 1000)
           {
-            uBit.display.print("W");
-            if(P1.getDigitalValue() == 1)
-            {
-              msg = true;
-              hTest = false;
-              break;
-            }
+            uBit.display.print("-");
+            uBit.sleep(500);
           }
-
+          else if (delta > 500)
+          {
+            uBit.display.print(".");
+            uBit.sleep(500);
+          }
+          digLo=0;
+          uBit.display.clear();
         }
-    }
 
+
+        if(P2.getDigitalValue() == 0)
+        {
+          while(P2.getDigitalValue() == 0)
+          {
+            uBit.display.print("0");
+            digLo++;
+            uBit.sleep(500);
+            break;
+          }
+
+          //End of message.
+          if(digLo >= 15)
+          {
+            uBit.display.print("E");
+            uBit.sleep(500);
+            msg = false;
+            test = false;
+            break;
+          }
+          uBit.display.clear();
+        }
+
+      }
   }
+}
   release_fiber();
 }
 
