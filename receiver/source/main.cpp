@@ -26,6 +26,9 @@ MicroBitPin P2(MICROBIT_ID_IO_P2, MICROBIT_PIN_P2, PIN_CAPABILITY_DIGITAL);
     int digLo =0;
     int digHi =0;
     bool msg = false;
+
+    int baseRead = 0;
+    int delta = 0;
     //Decoded morse message, needs to be decoded again into ascii.
     std::vector<char> deMsg;
 
@@ -34,53 +37,56 @@ MicroBitPin P2(MICROBIT_ID_IO_P2, MICROBIT_PIN_P2, PIN_CAPABILITY_DIGITAL);
 
     while(1)
     {
-
     while(msg == true)
     {
-      serial.baud(115200);
+      // read current number of milliseconds
+      baseRead = system_timer_current_time();
+
       if(P2.getDigitalValue() == 1)
       {
-        //If 3 dots in a row with no space then its a dash.
-        if(digHi > 2)
+        //Measure how long pin was either on or off for.
+        while(P2.getDigitalValue() == 1)
+        {
+          uBit.display.print("1");
+        }
+
+        delta = system_timer_current_time() - baseRead;
+        if(delta > 1000)
         {
           uBit.display.print("-");
-          binStr.push_back(1);
-          serial.send('1');
           uBit.sleep(500);
-          digHi = 0;
-          digLo = 0;
         }
-        else
+        else if (delta > 500)
         {
-          //Add a dot to the string
           uBit.display.print(".");
-          binStr.push_back(1);
-          serial.send('1');
           uBit.sleep(500);
-          digHi++;
-          digLo = 0;
         }
+        digLo=0;
+        uBit.display.clear();
       }
+
 
       if(P2.getDigitalValue() == 0)
       {
-        //End of Message
-        if(digLo >= 10)
+        while(P2.getDigitalValue() == 0)
+        {
+          uBit.display.print("0");
+          digLo++;
+          uBit.sleep(500);
+          break;
+        }
+
+        //End of message.
+        if(digLo >= 15)
         {
           uBit.display.print("E");
           uBit.sleep(500);
           msg = false;
           break;
         }
-        uBit.display.print("0");
-        binStr.push_back(1);
-        serial.send('0');
-        uBit.sleep(500);
-        digLo++;
+        uBit.display.clear();
       }
 
-      //Time Unit is 500 milliseconds.
-      uBit.display.clear();
     }
 
     //Waiting for a signal.

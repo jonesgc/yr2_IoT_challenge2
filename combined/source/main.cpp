@@ -72,7 +72,7 @@ int main()
             if (aPress)
             {
                 //Geater than a second = dash (hold on for three tu).
-                if ((delta > 1000) && (input))
+                if ((delta > 750) && (input))
                 {
                     uBit.display.print("-");
                     P1.setDigitalValue(1);
@@ -90,9 +90,8 @@ int main()
 
                 aPress = false;
                 input = true;
-                uBit.display.clear();
+                uBit.display.print("0");
                 P1.setDigitalValue(0);
-
             }
 
             //Stop sending and return to wrapper.
@@ -155,7 +154,9 @@ int main()
               {
                 uBit.display.print("-");
                 binStr.push_back(1);
-                //serial.send('1');
+                binStr.push_back(1);
+                binStr.push_back(1);
+                serial.send('1');
                 uBit.sleep(500);
                 digHi = 0;
                 digLo = 0;
@@ -165,7 +166,7 @@ int main()
                 //Add a dot to the string
                 uBit.display.print(".");
                 binStr.push_back(1);
-                //serial.send('1');
+                serial.send('1');
                 uBit.sleep(500);
                 digHi++;
                 digLo = 0;
@@ -180,7 +181,7 @@ int main()
                 uBit.display.print("E");
                 uBit.sleep(500);
                 msg = false;
-
+                decoded.push_back('|');
                 //Decode digital message into morse.
                 decoded = decoder.decodeDigital(binStr);
                 for (size_t i = 0; i < decoded.size(); i++)
@@ -191,8 +192,8 @@ int main()
                 break;
               }
               uBit.display.print("0");
-              binStr.push_back(1);
-              //serial.send('0');
+              binStr.push_back(0);
+              serial.send('0');
               uBit.sleep(500);
               digLo++;
             }
