@@ -6,6 +6,9 @@
 //START OF CODE
 #include "MicroBit.h"
 #include <vector>
+#include "../common/decoder.h"
+#include "../common/decoder.cpp"
+
 MicroBit uBit;
 MicroBitSerial serial(USBTX, USBRX);
 
@@ -24,6 +27,11 @@ int main()
 
   bool sender = false;
 
+  //Message storage vectors.
+  std::vector<char> decoded;
+  std::vector<char> ascii;
+
+  decoder decoder;
   //Wrapper that allows user to switch between send/recieve
   while(1)
   {
@@ -36,15 +44,20 @@ int main()
       //Send Handshake to change other microbit into receiver state.
       P1.setDigitalValue(1);
       uBit.sleep(2000);
+      P1.setDigitalValue(0);
       uBit.display.clear();
       bool input = true;
       bool aPress = false;
 
+      //Timing Variables.
+      uint64_t baseRead = 0;
+      uint64_t delta = 0;
+
       serial.baud(115200);
         while(sender)
         {
-            // read current number of milliseconds
-            uint64_t reading = system_timer_current_time();
+          // read current number of milliseconds
+          baseRead = system_timer_current_time();
 
             // loop while button A pressed
             while (buttonA.isPressed())
@@ -53,7 +66,7 @@ int main()
             }
 
             // time of loop execution
-            uint64_t delta = system_timer_current_time() - reading;
+          delta = system_timer_current_time() - baseRead;
 
             //if button was pressed
             if (aPress)
@@ -142,7 +155,7 @@ int main()
               {
                 uBit.display.print("-");
                 binStr.push_back(1);
-                serial.send('1');
+                //serial.send('1');
                 uBit.sleep(500);
                 digHi = 0;
                 digLo = 0;
@@ -152,7 +165,7 @@ int main()
                 //Add a dot to the string
                 uBit.display.print(".");
                 binStr.push_back(1);
-                serial.send('1');
+                //serial.send('1');
                 uBit.sleep(500);
                 digHi++;
                 digLo = 0;
@@ -167,11 +180,19 @@ int main()
                 uBit.display.print("E");
                 uBit.sleep(500);
                 msg = false;
+
+                //Decode digital message into morse.
+                decoded = decoder.decodeDigital(binStr);
+                for (size_t i = 0; i < decoded.size(); i++)
+                {
+                  serial.baud(115200);
+                  serial.send(decoded[i]);
+                }
                 break;
               }
               uBit.display.print("0");
               binStr.push_back(1);
-              serial.send('0');
+              //serial.send('0');
               uBit.sleep(500);
               digLo++;
             }
