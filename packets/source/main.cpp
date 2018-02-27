@@ -198,10 +198,11 @@ int main()
       {
         serial.send("entering recieve loop\r\n");
         // read current number of milliseconds
-        baseRead = system_timer_current_time();
+
 
         if(P2.getDigitalValue() == 1)
         {
+          baseRead = system_timer_current_time();
           while(P2.getDigitalValue() == 1)
           {
 
@@ -226,9 +227,10 @@ int main()
             serial.send('.');
           }
         }
-        delta = 0;
+
         if(P2.getDigitalValue()==0)
         {
+          baseRead = system_timer_current_time();
           serial.send("pin off detected 232\r\n");
           while(P2.getDigitalValue() == 0)
           {
@@ -243,7 +245,7 @@ int main()
 
           }
 
-          if ((delta > 1000) && (delta < 1500))
+          if ((delta > 1500) && (delta < 2000))
           {
             serial.send("/ appended 245 \r\n");
               uBit.display.print("/");
@@ -251,7 +253,7 @@ int main()
               serial.send('/');
           }
           //A dot, a single 1 for a single tu.
-          else if((delta >= 1500) && (delta < 2100))
+          else if((delta >= 2500) && (delta < 3100))
           {
             serial.send("eof recived");
             serial.send("\r\n");
@@ -270,6 +272,8 @@ int main()
             serial.send("end of recive loop\r\n");
         }
         serial.send("exiting recive loop\r\n");
+
+        uBit.sleep(500);
         uBit.display.clear();
       }
   }
