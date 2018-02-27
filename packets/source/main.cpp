@@ -37,6 +37,9 @@ int main()
   {
     bool sender = false;
 
+    //Timing Variables.
+    uint64_t baseRead = 0;
+    uint64_t delta = 0;
 
 
     //Message storage vectors.
@@ -56,9 +59,7 @@ int main()
       bool aPress = false;
       bool bPress = false;
 
-      //Timing Variables.
-      uint64_t baseRead = 0;
-      uint64_t delta = 0;
+
         while(sender)
         {
           // read current number of milliseconds
@@ -146,7 +147,7 @@ int main()
                         break;
                       case '|':
                         P1.setDigitalValue(0);
-                        uBit.sleep(2000);
+                        uBit.sleep(5000);
                         break;
                     }
                   }
@@ -166,6 +167,7 @@ int main()
               uBit.display.clear();
             }
 
+
         }
     }
 
@@ -174,12 +176,10 @@ int main()
     int digLo =0;
     int digHi =0;
     bool msg = false;
-
-    int baseRead = 0;
-    int delta = 0;
+    bool pin = false;
 
     //Binary String from pin.
-    std::vector<int> binStr;
+    ManagedString binStr;
     bool test=false;
     uBit.display.print("W");
     //Listen to P2 for signal
@@ -190,28 +190,26 @@ int main()
       uBit.display.print("L");
       uBit.sleep(500);
       uBit.display.clear();
+      P2.setDigitalValue(0);
     }
 
     if(test)
     {
       while(msg == true)
       {
-        serial.send("entering recieve loop\r\n");
-        // read current number of milliseconds
-
-
         if(P2.getDigitalValue() == 1)
         {
           baseRead = system_timer_current_time();
+
           while(P2.getDigitalValue() == 1)
           {
-
+            pin = true;
           }
-
+          serial.send("reading 1 \r\n");
           delta = system_timer_current_time() - baseRead;
-
+          serial.send(int(delta));
           //Geater than a second = dash (hold on for three tu).
-          if (delta > 1500)
+          if ((delta > 1400) && (delta < 1700))
           {
             serial.send("- recived \r\n");
               uBit.display.print("-");
@@ -219,7 +217,7 @@ int main()
               serial.send('-');
           }
           //A dot, a single 1 for a single tu.
-          else if((delta > 400) && (delta < 700))
+          else if((delta > 400) && (delta < 1200))
           {
             serial.send(". recived \r\n");
             uBit.display.print(".");
@@ -231,21 +229,17 @@ int main()
         if(P2.getDigitalValue()==0)
         {
           baseRead = system_timer_current_time();
+
           serial.send("pin off detected 232\r\n");
           while(P2.getDigitalValue() == 0)
           {
-
+            pin = true;
           }
-
+          serial.send("reading 0 \r\n");
           delta = system_timer_current_time() - baseRead;
-          serial.send(delta);
-          if(delta <=1000)
-          {
-            serial.send("delta too low, cba\r\n");
+          serial.send(int(delta));
 
-          }
-
-          if ((delta > 1500) && (delta < 2000))
+          if ((delta > 1050) && (delta < 2000))
           {
             serial.send("/ appended 245 \r\n");
               uBit.display.print("/");
@@ -253,31 +247,36 @@ int main()
               serial.send('/');
           }
           //A dot, a single 1 for a single tu.
-          else if((delta >= 2500) && (delta < 3100))
+          else if(delta >= 2500)
           {
             serial.send("eof recived");
             serial.send("\r\n");
             uBit.display.print("|");
             packet = packet + "|";
             serial.send('|');
+            for (size_t i = 0; i < packet.length(); i++)
+            {
+              uBit.display.print(packet.charAt(i));
+              uBit.sleep(200);
+            }
             packet = 0;
             msg = false;
             test = false;
+            P2.setDigitalValue(0);
+            break;
 
           }
-          else{
+          else
+          {
             serial.send("delta too high, missing\r\n");
-
           }
-            serial.send("end of recive loop\r\n");
         }
         serial.send("exiting recive loop\r\n");
-
-        uBit.sleep(500);
+        pin = false;
         uBit.display.clear();
+        }
       }
   }
-}
   release_fiber();
 }
 
