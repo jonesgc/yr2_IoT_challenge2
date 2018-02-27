@@ -93,6 +93,7 @@ int main()
                 input = true;
                 uBit.display.print("0");
                 P1.setDigitalValue(0);
+                uBit.sleep(500);
             }
 
             //Stop sending and return to wrapper.
