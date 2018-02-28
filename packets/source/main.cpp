@@ -141,6 +141,10 @@ int main()
                         P1.setDigitalValue(1);
                         uBit.sleep(1500);
                         break;
+                      case ' ':
+                        P1.setDigitalValue(0);
+                        uBit.sleep(500);
+                        break;
                       case '/':
                         P1.setDigitalValue(0);
                         uBit.sleep(1500);
@@ -214,7 +218,6 @@ int main()
             serial.send("- recived \r\n");
               uBit.display.print("-");
               packet = packet + "-";
-              serial.send('-');
           }
           //A dot, a single 1 for a single tu.
           else if((delta > 400) && (delta < 1200))
@@ -222,7 +225,9 @@ int main()
             serial.send(". recived \r\n");
             uBit.display.print(".");
             packet = packet + ".";
-            serial.send('.');
+          }
+          else{
+            serial.send("delta too high. \r\n");
           }
         }
 
@@ -239,9 +244,16 @@ int main()
           delta = system_timer_current_time() - baseRead;
           serial.send(int(delta));
 
-          if ((delta > 1050) && (delta < 2000))
+          if((delta < 1000) && (delta > 400))
           {
-            serial.send("/ appended 245 \r\n");
+            serial.send("space appended 249 \r\n");
+            uBit.display.print(" ");
+            packet = packet + " ";
+            serial.send(' ');
+          }
+          else if ((delta > 1050) && (delta < 2000))
+          {
+            serial.send("/ appended 256 \r\n");
               uBit.display.print("/");
               packet = packet + "/";
               serial.send('/');
