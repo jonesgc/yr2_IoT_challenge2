@@ -3,6 +3,7 @@
 
 protocol::protocol()
 {
+
 }
 
 protocol::~protocol()
@@ -10,26 +11,27 @@ protocol::~protocol()
 }
 
 //Decode the morse code string into ascii characters.
-std::string protocol::deCodeMorse(std::string morse)
+ManagedString protocol::deCodeMorse(ManagedString morse)
 {
-	std::string decoded;
-	std::string substr;
-	for (size_t i = 0; i < morse.size(); i++)
+	ManagedString decoded;
+	ManagedString substr;
+
+	for (size_t i = 0; i < morse.length(); i++)
 	{
-		if ((morse[i] == '|') || (morse[i] == '/'))
+		if ((morse.charAt(i) == '|') || (morse.charAt(i) == '/'))
 		{
 			decoded = decoded + '/';
 			decoded = decoded + morseToAscii(substr);
 			substr = "";
 		}
-		else if (morse[i] == ' ')
+		else if (morse.charAt(i) == ' ')
 		{
 			decoded = decoded + morseToAscii(substr);
 			substr = "";
 		}
 		else
 		{
-			substr = substr + morse[i];
+			substr = substr + morse.charAt(i);
 		}
 
 	}
@@ -88,7 +90,7 @@ std::string protocol::decodeBinMorse(std::string binary)
 	return morse;
 }
 
-char protocol::morseToAscii(std::string morse)
+char protocol::morseToAscii(ManagedString morse)
 {
 	char ascii;
 

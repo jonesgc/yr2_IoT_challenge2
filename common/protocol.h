@@ -15,11 +15,11 @@ public:
 
 
 	//Decode the morse string into characters.
-	std::string deCodeMorse(std::string);
+	ManagedString deCodeMorse(ManagedString);
 
 	//Decode Binary into morse
 	std::string  decodeBinMorse(std::string);
 
-	char morseToAscii(std::string);
+	char morseToAscii(ManagedString);
 };
 #endif

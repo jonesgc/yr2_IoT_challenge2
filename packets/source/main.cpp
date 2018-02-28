@@ -28,9 +28,12 @@ int main()
   uBit.display.scroll("init");
   serial.baud(115200);
   serial.send("\r\n mbit starting \r\n");
+
   protocol protocol;
 
   ManagedString packet;
+  ManagedString decoded;
+  ManagedString ascii;
 
   //Wrapper that allows user to switch between send/recieve
   while(1)
@@ -42,9 +45,7 @@ int main()
     uint64_t delta = 0;
 
 
-    //Message storage vectors.
-    std::vector<char> decoded;
-    std::vector<char> ascii;
+
 
     //Sender. The microbit that the buttonA was pressed on switches into this state.
     //Messages are sent from P1 to P2.
@@ -118,6 +119,12 @@ int main()
                   serial.send(packet);
                   serial.send("\r\n");
 
+                  //Decode packet.
+                  decoded = protocol.deCodeMorse(packet);
+                  serial.send("decoded packet: ");
+                  serial.send(decoded);
+                  serial.send("\r\n");
+                  
                   //Set receiver microbit into listening state.
                   P1.setDigitalValue(1);
                   uBit.sleep(50);
