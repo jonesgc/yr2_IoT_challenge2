@@ -46,35 +46,30 @@ int main()
     std::vector<char> decoded;
     std::vector<char> ascii;
 
-    //Sender. The microbit that the button was pressed on switches into this state.
-    //The receiver microbit gets a handshake that tells it to move into receiver state.
+    //Sender. The microbit that the buttonA was pressed on switches into this state.
+    //Messages are sent from P1 to P2.
     if (buttonB.isPressed())
     {
       uBit.display.print('S');
       sender = true;
-      //Send Handshake to change other microbit into receiver state.
-
       uBit.display.clear();
       bool input = true;
       bool aPress = false;
       bool bPress = false;
 
-
-        while(sender)
+        while(sender == true)
         {
-          // read current number of milliseconds
           baseRead = system_timer_current_time();
 
-            // loop while button A pressed
+            //Measure how long buttonA is pressed for.
             while (buttonA.isPressed())
             {
                 aPress = true;
             }
 
-            // time of loop execution
-          delta = system_timer_current_time() - baseRead;
+            delta = system_timer_current_time() - baseRead;
 
-            //if button was pressed
+            //If buttonA was pressed, morse character depends on length of press.
             if (aPress)
             {
                 //Geater than a second = dash (hold on for three tu).
@@ -94,6 +89,7 @@ int main()
                   uBit.sleep(500);
                 }
 
+                //Space between morse characters.
                 aPress = false;
                 input = true;
                 packet = packet + " ";
@@ -101,7 +97,7 @@ int main()
                 uBit.sleep(500);
             }
 
-            // loop while button A pressed
+            //Measure how long buttonB is pressed for.
             while (buttonB.isPressed())
             {
                 bPress = true;
@@ -121,12 +117,15 @@ int main()
                   serial.send("sending packet: ");
                   serial.send(packet);
                   serial.send("\r\n");
+
+                  //Set receiver microbit into listening state.
                   P1.setDigitalValue(1);
                   uBit.sleep(50);
                   P1.setDigitalValue(0);
+
+                  //Send Packet contents.
                   for (size_t i = 0; i < packet.length(); i++)
                   {
-
                     char temp = packet.charAt(i);
                     serial.send("sending: ");
                     serial.send(temp);
@@ -151,13 +150,14 @@ int main()
                         break;
                       case '|':
                         P1.setDigitalValue(0);
-                        uBit.sleep(5000);
+                        uBit.sleep(3000);
                         break;
                     }
                   }
+                  //End of message sent, break out of sender state.
                   break;
               }
-              //A dot, a single 1 for a single tu.
+              //Space separating words.
               else if((input) && (delta < 1000))
               {
                 uBit.display.print("/");
@@ -239,6 +239,12 @@ int main()
           while(P2.getDigitalValue() == 0)
           {
             pin = true;
+            digLo++;
+            if(digLo > 1000000)
+            {
+              serial.send("END OF MESSAGE");
+              break;
+            }
           }
           serial.send("reading 0 \r\n");
           delta = system_timer_current_time() - baseRead;
@@ -258,7 +264,7 @@ int main()
               packet = packet + "/";
               serial.send('/');
           }
-          //A dot, a single 1 for a single tu.
+          //End of message detected.
           else if(delta >= 2500)
           {
             serial.send("eof recived");
@@ -269,14 +275,13 @@ int main()
             for (size_t i = 0; i < packet.length(); i++)
             {
               uBit.display.print(packet.charAt(i));
-              uBit.sleep(200);
+              uBit.sleep(500);
             }
             packet = 0;
             msg = false;
             test = false;
             P2.setDigitalValue(0);
             break;
-
           }
           else
           {
