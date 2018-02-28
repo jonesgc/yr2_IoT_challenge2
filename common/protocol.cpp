@@ -1,66 +1,147 @@
 #include "protocol.h"
 #include <string>
 
-//Constructor.
 protocol::protocol()
 {
-  //Mapping binary values to characters.
-  //Using international Morse code mapping.
-	binToChar[0b01] = 'A';
-	binToChar[0b1000] = 'B';
-	binToChar[0b1010] = 'C';
-	binToChar[0b100] = 'D';
-	binToChar[0b0] = 'E';
-	binToChar[0b0010] = 'F';
-	binToChar[0b110] = 'G';
-	binToChar[0b0000] = 'H';
-	binToChar[0b00] = 'I';
-	binToChar[0b0111] = 'J';
-	binToChar[0b101] = 'K';
-	binToChar[0b0100] = 'L';
-	binToChar[0b11] = 'M';
-	binToChar[0b10] = 'N';
-	binToChar[0b111] = 'O';
-	binToChar[0b0110] = 'P';
-	binToChar[0b1101] = 'Q';
-	binToChar[0b101] = 'R';
-	binToChar[0b1] = 'T';
-	binToChar[0b001] = 'U';
-	binToChar[0b0001] = 'V';
-	binToChar[0b011] = 'W';
-	binToChar[0b1001] = 'X';
-	binToChar[0b1011] = 'Y';
-	binToChar[0b1100] = 'Z';
-
 }
 
-//Destructor.
 protocol::~protocol()
 {
 }
 
-//This requires binary literal to be in morse compliance.
-protocol::lookUp(int morse)
+//Decode the morse code string into ascii characters.
+std::string protocol::deCodeMorse(std::string morse)
 {
-	char temp = binToChar[morse];
-	return temp;
-}
-
-protocol::encryptAndDecrypt(int morse)
-{
-	int key [2] = {0b00100001, 0b00100010};
-	int encrypted = morse;
-	encrypted = encrypted ^ key [1];
-	return encrypted;
-}
-
-protocol::encryptMsg(std::vector <int>msg)
-{
-	std::vector<int>encryptedMsg;
-
-	for (size_t i = 0; i < msg.size(); i++)
+	std::string decoded;
+	std::string substr;
+	for (size_t i = 0; i < morse.size(); i++)
 	{
-		encryptedMsg.push_back(encryptAndDecrypt(msg[i]));
+		if ((morse[i] == '|') || (morse[i] == '/'))
+		{
+			decoded = decoded + '/';
+			decoded = decoded + morseToAscii(substr);
+			substr = "";
+		}
+		else if (morse[i] == ' ')
+		{
+			decoded = decoded + morseToAscii(substr);
+			substr = "";
+		}
+		else
+		{
+			substr = substr + morse[i];
+		}
+
 	}
-	return encryptedMsg;
+
+	return decoded;
+}
+
+std::string protocol::decodeBinMorse(std::string binary)
+{
+	std::string morse;
+
+	int zeroCount = 0;
+	int oneCount = 0;
+
+	for (size_t i = 0; i < binary.length(); i++)
+	{
+		switch (binary[i])
+		{
+		case 0:
+			oneCount = 0;
+			zeroCount++;
+			break;
+		case 1:
+			oneCount++;
+			zeroCount = 0;
+
+			if (oneCount >= 3)
+			{
+				morse.push_back('-');
+				oneCount = 0;
+			}
+			else if ((oneCount == 1) && (binary[i+1] != 1))
+			{
+				morse.push_back('.');
+			}
+
+
+			break;
+		}
+		//Space between words.
+		if ((zeroCount == 2) && (binary[i+2] != 0))
+		{
+			morse.push_back(' ');
+		}
+		else if ((zeroCount == 5) && (binary[i+1] != 0))
+		{
+			morse.push_back('/');
+		}
+		//End of message
+		else if (zeroCount >= 10)
+		{
+			morse.push_back('|');
+		}
+	}
+
+	return morse;
+}
+
+char protocol::morseToAscii(std::string morse)
+{
+	char ascii;
+
+	if (morse == ".-")
+		ascii = 'A';
+	if(morse == "-...")
+		ascii = 'B';
+	if (morse == "-.-.")
+		ascii = 'C';
+	if (morse == "-..")
+		ascii = 'D';
+	if (morse == ".")
+		ascii = 'E';
+	if (morse == "..-.")
+		ascii = 'F';
+	if (morse == "--.")
+		ascii = 'G';
+	if (morse == "....")
+		ascii = 'H';
+	if (morse == "..")
+		ascii = 'I';
+	if (morse == ".---")
+		ascii = 'J';
+	if (morse == "-.-")
+		ascii = 'K';
+	if (morse == ".-..")
+		ascii = 'L';
+	if (morse == "--")
+		ascii = 'M';
+	if (morse == "-.")
+		ascii = 'N';
+	if (morse == "---")
+		ascii = 'O';
+	if (morse == ".--.")
+		ascii = 'P';
+	if (morse == "--.-")
+		ascii = 'Q';
+	if (morse == ".-.")
+		ascii = 'R';
+	if (morse == "-")
+		ascii = 'T';
+	if (morse == "..-")
+		ascii = 'U';
+	if (morse == "...-")
+		ascii = 'V';
+	if (morse == ".--")
+		ascii = 'W';
+	if (morse == "-..-")
+		ascii = 'X';
+	if (morse == "-.--")
+		ascii = 'Y';
+	if (morse == "--..")
+		ascii = 'Z';
+
+	return ascii;
 }

@@ -1,28 +1,25 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
-#include <map>
 #include <string>
 #include <vector>
 
 class protocol
 {
 public:
-  //Constructor
-  protocol();
+	//Constructor
+	protocol();
 
-  //Destructor
-  ~protocol();
+	//Destructor
+	~protocol();
 
-  std::map <int, char> binToChar;
 
-  //Find Ascii character for given binary literal.
-  char lookUp(int);
+	//Decode the morse string into characters.
+	std::string deCodeMorse(std::string);
 
-  //Encrypt a binary literal via XOR.
-  int encryptAndDecrypt(int);
+	//Decode Binary into morse
+	std::string  decodeBinMorse(std::string);
 
-  //Encrypt/Decrypt a message.
-  std::vector<int>encryptMsg(std::vector<int>);
+	char morseToAscii(std::string);
 };
 #endif

@@ -6,8 +6,8 @@
 //START OF CODE
 #include "MicroBit.h"
 #include <vector>
-#include "../common/decoder.h"
-#include "../common/decoder.cpp"
+#include "../common/protocol.h"
+#include "../common/protocol.cpp"
 
 MicroBit uBit;
 MicroBitSerial serial(USBTX, USBRX);
@@ -28,10 +28,10 @@ int main()
   uBit.display.scroll("init");
   serial.baud(115200);
   serial.send("\r\n mbit starting \r\n");
+  protocol protocol;
 
   ManagedString packet;
 
-  decoder decoder;
   //Wrapper that allows user to switch between send/recieve
   while(1)
   {
@@ -158,13 +158,14 @@ int main()
                   break;
               }
               //Space separating words.
-              else if((input) && (delta < 1000))
+              else if((input) && (delta >= 1000))
               {
                 uBit.display.print("/");
                 packet = packet + "/";
                 input = false;
                 uBit.sleep(500);
               }
+              else if((input) && (delta < 1000))
 
               bPress = false;
               input = true;
