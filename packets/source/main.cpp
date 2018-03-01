@@ -28,6 +28,20 @@ int main()
   uBit.display.scroll("init");
   serial.baud(115200);
   serial.send("\r\n mbit starting \r\n");
+//begin test
+  ManagedString testyboi66576("foo");
+  serial.send("sending: ");
+  serial.send(testyboi66576);
+  serial.send("\r\n");
+  testyboi66576 = "";
+  serial.send("1sending: ");
+  serial.send(testyboi66576);
+  serial.send("\r\n");
+  testyboi66576 = "bar";
+  serial.send("2sending: ");
+  serial.send(testyboi66576);
+  serial.send("\r\n");
+
 
   protocol protocol;
 
@@ -124,7 +138,7 @@ int main()
                   serial.send("decoded packet: ");
                   serial.send(decoded);
                   serial.send("\r\n");
-                  
+
                   //Set receiver microbit into listening state.
                   P1.setDigitalValue(1);
                   uBit.sleep(50);
@@ -162,6 +176,7 @@ int main()
                     }
                   }
                   //End of message sent, break out of sender state.
+                  decoded = "";
                   break;
               }
               //Space separating words.
