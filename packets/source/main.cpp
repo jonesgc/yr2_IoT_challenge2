@@ -105,7 +105,6 @@ int main()
                 }
 
                 uBit.display.clear();
-                uBit.sleep(500);
                 aPress = false;
                 input = true;
             }
@@ -139,7 +138,7 @@ int main()
 
                   //Set receiver microbit into listening state.
                   P1.setDigitalValue(1);
-                  uBit.sleep(50);
+                  uBit.sleep(500);
                   P1.setDigitalValue(0);
 
                   //Send Packet contents.
@@ -154,10 +153,14 @@ int main()
                       case '.':
                         P1.setDigitalValue(1);
                         uBit.sleep(500);
+                        P1.setDigitalValue(0);
+                        uBit.sleep(50);
                         break;
                       case '-':
                         P1.setDigitalValue(1);
                         uBit.sleep(1500);
+                        P1.setDigitalValue(0);
+                        uBit.sleep(50);
                         break;
                       case ' ':
                         P1.setDigitalValue(0);
@@ -210,8 +213,6 @@ int main()
     bool msg = false;
     bool pin = false;
 
-    //Binary String from pin.
-    ManagedString binStr;
     bool test=false;
     uBit.display.print("W");
     //Listen to P2 for signal
@@ -219,10 +220,10 @@ int main()
     {
       test = true;
       msg = true;
+      P2.setDigitalValue(0);
       uBit.display.print("L");
       uBit.sleep(500);
       uBit.display.clear();
-      P2.setDigitalValue(0);
     }
 
     if(test)
@@ -235,13 +236,21 @@ int main()
 
           while(P2.getDigitalValue() == 1)
           {
+            digHi++;
             pin = true;
+            if(digHi > 1000000)
+            {
+              serial.send("END OF MESSAGE");
+              msg = false;
+              test = false;
+              break;
+            }
           }
           serial.send("reading 1 \r\n");
           delta = system_timer_current_time() - baseRead;
           serial.send(int(delta));
           //Geater than a second = dash (hold on for three tu).
-          if ((delta > 1400) && (delta < 1700))
+          if ((delta > 1400) && (delta < 3000))
           {
             serial.send("- recived \r\n");
               uBit.display.print("-");
@@ -271,6 +280,8 @@ int main()
             if(digLo > 1000000)
             {
               serial.send("END OF MESSAGE");
+              msg = false;
+              test = false;
               break;
             }
           }
@@ -285,7 +296,7 @@ int main()
             packet = packet + " ";
             serial.send(' ');
           }
-          else if ((delta > 1050) && (delta < 2000))
+          else if ((delta > 1000) && (delta < 2500))
           {
             serial.send("/ appended 256 \r\n");
               uBit.display.print("/");
@@ -300,12 +311,19 @@ int main()
             uBit.display.print("|");
             packet = packet + "|";
             serial.send('|');
-            for (size_t i = 0; i < packet.length(); i++)
-            {
-              uBit.display.print(packet.charAt(i));
-              uBit.sleep(500);
-            }
-            packet = 0;
+            serial.send("Packet is: ");
+            serial.send(packet);
+            serial.send("\n");
+            decoded = protocol.deCodeMorse(packet);
+            serial.send("Decoded is: ");
+            serial.send(decoded);
+            serial.send("\n");
+
+            uBit.display.scroll(decoded);
+            uBit.sleep(500);
+            packet = "";
+            decoded = "";
+
             msg = false;
             test = false;
             P2.setDigitalValue(0);

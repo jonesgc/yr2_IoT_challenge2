@@ -100,7 +100,7 @@ std::string protocol::decodeBinMorse(std::string binary)
 
 char protocol::morseToAscii(ManagedString morse)
 {
-	char ascii;
+	char ascii=0;
 
 	if (morse == ".-")
 		ascii = 'A';
