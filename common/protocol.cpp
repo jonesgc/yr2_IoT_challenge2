@@ -1,3 +1,6 @@
+//Authors: Gregory Jones, Sean Kearney
+
+
 #include "protocol.h"
 #include <string>
 

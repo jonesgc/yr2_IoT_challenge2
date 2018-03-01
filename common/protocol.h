@@ -1,6 +1,8 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
+//Authors: Gregory Jones, Sean Kearney
+
 #include <string>
 #include <vector>
 

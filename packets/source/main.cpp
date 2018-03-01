@@ -1,4 +1,4 @@
-//Author: Gregory Jones
+//Authors: Gregory Jones, Sean Kearney
 //This is the main file for Challenge 2 submission.
 //See readme.md for more infomation
 //Project Start Date: 17/02/2018
