@@ -20,8 +20,16 @@ ManagedString protocol::deCodeMorse(ManagedString morse)
 	{
 		if ((morse.charAt(i) == '|') || (morse.charAt(i) == '/'))
 		{
-			decoded = decoded + '/';
 			decoded = decoded + morseToAscii(substr);
+
+			if(morse.charAt(i) == '|')
+			{
+				decoded = decoded + '|';
+			}
+			else
+			{
+				decoded = decoded + '/';
+			}
 			substr = "";
 		}
 		else if (morse.charAt(i) == ' ')

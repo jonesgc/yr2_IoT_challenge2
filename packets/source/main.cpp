@@ -104,12 +104,10 @@ int main()
                   uBit.sleep(500);
                 }
 
-                //Space between morse characters.
-                aPress = false;
-                input = true;
-                packet = packet + " ";
                 uBit.display.clear();
                 uBit.sleep(500);
+                aPress = false;
+                input = true;
             }
 
             //Measure how long buttonB is pressed for.
@@ -123,7 +121,7 @@ int main()
             if(bPress)
             {
               //End the message.
-              if ((delta > 1000) && (input))
+              if ((delta > 2000) && (input))
               {
                   uBit.display.print("|");
                   packet = packet + "|";
@@ -177,17 +175,24 @@ int main()
                   }
                   //End of message sent, break out of sender state.
                   decoded = "";
+                  packet = "";
                   break;
               }
               //Space separating words.
-              else if((input) && (delta >= 1000))
+              else if((input) && (delta >= 1000) && (delta <= 2000))
               {
                 uBit.display.print("/");
                 packet = packet + "/";
                 input = false;
                 uBit.sleep(500);
               }
-              else if((input) && (delta < 1000))
+              else if((input) && (delta < 1000) && (delta >= 400))
+              {
+                uBit.display.print("S");
+                packet = packet + " ";
+                input = false;
+                uBit.sleep(500);
+              }
 
               bPress = false;
               input = true;
