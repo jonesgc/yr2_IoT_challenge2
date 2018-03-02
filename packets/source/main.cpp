@@ -121,6 +121,7 @@ int main()
               //End the message.
               if ((delta > 2000) && (input))
               {
+                  //Append end of message character.
                   uBit.display.print("|");
                   packet = packet + "|";
                   input = false;
@@ -176,14 +177,10 @@ int main()
                       case ' ':
                         P1.setDigitalValue(0);
                         uBit.sleep(500);
-                        P1.setDigitalValue(1);
-                        uBit.sleep(5);
                         break;
                       case '/':
                         P1.setDigitalValue(0);
                         uBit.sleep(1500);
-                        P1.setDigitalValue(1);
-                        uBit.sleep(5);
                         break;
                       case '|':
                         P1.setDigitalValue(0);
@@ -241,18 +238,23 @@ int main()
       uBit.display.clear();
     }
 
+    //Receiver State.
     if(test)
     {
       while(msg == true)
       {
+        //Read pin high.
+        //Possible outcomes are: . or -
         if(P2.getDigitalValue() == 1)
         {
+          //Measure time.
           baseRead = system_timer_current_time();
 
           while(P2.getDigitalValue() == 1)
           {
             digHi++;
             pin = true;
+            //Failsafe breakout.
             if(digHi > 1000000)
             {
               serial.send("END OF MESSAGE");
@@ -262,8 +264,11 @@ int main()
             }
           }
           serial.send("reading 1 \r\n");
+          //Get duration.
           delta = system_timer_current_time() - baseRead;
           serial.send(int(delta));
+
+          //Get morse from digital signals.
           //Geater than a second = dash (hold on for three tu).
           if ((delta > 1400) && (delta < 3000))
           {
@@ -283,8 +288,11 @@ int main()
           }
         }
 
+        //Read pin low.
+        //Possible outcomes: space, / or |.
         if(P2.getDigitalValue()==0)
         {
+          //Measure time.
           baseRead = system_timer_current_time();
 
           serial.send("pin off detected 232\r\n");
@@ -301,9 +309,11 @@ int main()
             }
           }
           serial.send("reading 0 \r\n");
+          //Determine duration.
           delta = system_timer_current_time() - baseRead;
           serial.send(int(delta));
 
+          //Space between letters.
           if((delta < 1000) && (delta > 400))
           {
             serial.send("space appended 249 \r\n");
@@ -311,6 +321,7 @@ int main()
             packet = packet + " ";
             serial.send(' ');
           }
+          //Space between words.
           else if ((delta > 1000) && (delta < 2500))
           {
             serial.send("/ appended 256 \r\n");
@@ -342,11 +353,12 @@ int main()
             serial.send(ascii);
             serial.send("\n");
 
+            //Display packet contents.
             uBit.display.scroll(ascii);
-            uBit.sleep(500);
             packet = "";
             decoded = "";
-
+            ascii= "";
+            //Return to waiting state.
             msg = false;
             test = false;
             P2.setDigitalValue(0);

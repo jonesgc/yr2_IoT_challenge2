@@ -1,11 +1,12 @@
-
+//Authors: Gregory Jones + Sean Kearney
 #include "protocol.h"
 #include <string>
 
+//Constructor
 protocol::protocol()
 {
 }
-
+//Destructor
 protocol::~protocol()
 {
 }
@@ -19,20 +20,32 @@ ManagedString protocol::deCodeMorse(ManagedString morse)
 
 	for (size_t i = 0; i < morse.length(); i++)
 	{
+		//Do not encrypt grammar characters.
 		if ((morse.charAt(i) == '|') || (morse.charAt(i) == '/'))
 		{
-			decoded = decoded + ' ';
 			decoded = decoded + morseToAscii(substr);
 
 			if (morse.charAt(i) == '|')
 			{
 				decoded = decoded + '|';
+				break;
 			}
 			else
 			{
 				decoded = decoded + '/';
 			}
-			substr = "";
+			//First space is between characters.
+			if (space == true)
+			{
+				decoded = decoded + morseToAscii(substr);
+				substr = "";
+				space = false;
+			}
+			else
+			{
+				space = true;
+				substr = "";
+			}
 		}
 		else if (morse.charAt(i) == ' ')
 		{
@@ -51,6 +64,7 @@ ManagedString protocol::deCodeMorse(ManagedString morse)
 		}
 		else
 		{
+			//Add characters to be decoded.
 			substr = substr + morse.charAt(i);
 		}
 
@@ -58,7 +72,7 @@ ManagedString protocol::deCodeMorse(ManagedString morse)
 
 	return decoded;
 }
-
+//Encode ascii characters into morse strings.
 ManagedString protocol::encodeAscii(ManagedString ascii)
 {
 	ManagedString encoded = "";
@@ -80,6 +94,7 @@ ManagedString protocol::encodeAscii(ManagedString ascii)
 		}
 		else
 		{
+			//After every addition add a space to ensure proper decoding.
 			encoded = encoded + asciiToMorse(ascii.charAt(i));
 			encoded = encoded + ' ';
 		}
@@ -89,6 +104,8 @@ ManagedString protocol::encodeAscii(ManagedString ascii)
 	return encoded;
 }
 
+//Encrypt ascii string by a hardcoded key.
+//Encryption method was a simgple shifting cypher.
 ManagedString protocol::encrypt(ManagedString ascii)
 {
 
@@ -111,6 +128,8 @@ ManagedString protocol::encrypt(ManagedString ascii)
 		}
 		else
 		{
+			//Add the key value to the character meaning it will have a different ascii
+			//value, then append it to the string.
 			encrypted = encrypted + char((ascii.charAt(i) + key));
 		}
 
@@ -118,6 +137,8 @@ ManagedString protocol::encrypt(ManagedString ascii)
 	return encrypted;
 }
 
+//Decrypt an ascii string.
+//This uses the reverse of the encryption method.
 ManagedString protocol::decrypt(ManagedString ascii)
 {
 	ManagedString decrypted = "";
@@ -139,6 +160,7 @@ ManagedString protocol::decrypt(ManagedString ascii)
 		}
 		else
 		{
+			//Shift the character to its value and append it to the message.
 			decrypted = decrypted + char((ascii.charAt(i) + key));
 		}
 
@@ -146,6 +168,7 @@ ManagedString protocol::decrypt(ManagedString ascii)
 	return decrypted;
 }
 
+//This function holds the assciation between morse code strings and their ascii counter parts.
 char protocol::morseToAscii(ManagedString morse)
 {
 	char ascii =0;
@@ -226,6 +249,7 @@ char protocol::morseToAscii(ManagedString morse)
 	return ascii;
 }
 
+//This function maps ascii to morse code strings.
 ManagedString protocol::asciiToMorse(char ascii)
 {
 
