@@ -165,21 +165,25 @@ int main()
                         P1.setDigitalValue(1);
                         uBit.sleep(500);
                         P1.setDigitalValue(0);
-                        uBit.sleep(50);
+                        uBit.sleep(5);
                         break;
                       case '-':
                         P1.setDigitalValue(1);
                         uBit.sleep(1500);
                         P1.setDigitalValue(0);
-                        uBit.sleep(50);
+                        uBit.sleep(5);
                         break;
                       case ' ':
                         P1.setDigitalValue(0);
                         uBit.sleep(500);
+                        P1.setDigitalValue(1);
+                        uBit.sleep(5);
                         break;
                       case '/':
                         P1.setDigitalValue(0);
                         uBit.sleep(1500);
+                        P1.setDigitalValue(1);
+                        uBit.sleep(5);
                         break;
                       case '|':
                         P1.setDigitalValue(0);
@@ -315,7 +319,7 @@ int main()
               serial.send('/');
           }
           //End of message detected.
-          else if(delta >= 2500)
+          else if(delta >= 2700)
           {
             serial.send("eof recived");
             serial.send("\r\n");
@@ -325,12 +329,20 @@ int main()
             serial.send("Packet is: ");
             serial.send(packet);
             serial.send("\n");
+
+            //This is the encrypted packet.
             decoded = protocol.deCodeMorse(packet);
             serial.send("Decoded is: ");
             serial.send(decoded);
             serial.send("\n");
 
-            uBit.display.scroll(decoded);
+            //Decrypt the packet.
+            ascii = protocol.decrypt(decoded);
+            serial.send("Decrypted + decoded is: ");
+            serial.send(ascii);
+            serial.send("\n");
+
+            uBit.display.scroll(ascii);
             uBit.sleep(500);
             packet = "";
             decoded = "";
