@@ -19,9 +19,18 @@ public:
 	//Decode the morse string into characters.
 	ManagedString deCodeMorse(ManagedString);
 
-	//Decode Binary into morse
-	std::string  decodeBinMorse(std::string);
+	//Encode ascii into morse
+		ManagedString encodeAscii(ManagedString);
 
+	//Encrypt Ascii string
+	ManagedString encrypt(ManagedString);
+
+	//Decrypt Ascii string
+	ManagedString decrypt(ManagedString);
+
+private:
 	char morseToAscii(ManagedString);
+
+	ManagedString asciiToMorse(char);
 };
 #endif

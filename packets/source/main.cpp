@@ -48,7 +48,6 @@ int main()
   ManagedString packet;
   ManagedString decoded;
   ManagedString ascii;
-
   //Wrapper that allows user to switch between send/recieve
   while(1)
   {
@@ -134,6 +133,18 @@ int main()
                   decoded = protocol.deCodeMorse(packet);
                   serial.send("decoded packet: ");
                   serial.send(decoded);
+                  serial.send("\r\n");
+
+                  //Encrypt decoded packet.
+                  ascii = protocol.encrypt(decoded);
+                  serial.send("encrypted packet: ");
+                  serial.send(ascii);
+                  serial.send("\r\n");
+
+                  //Re-encode to morse;
+                  packet = protocol.encodeAscii(ascii);
+                  serial.send("re-encoded packet: ");
+                  serial.send(packet);
                   serial.send("\r\n");
 
                   //Set receiver microbit into listening state.
