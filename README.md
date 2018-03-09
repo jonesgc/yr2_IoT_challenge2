@@ -1,6 +1,10 @@
 IOT_Challenge2
 Authors: Gregory Jones + Sean Kearney
 
+Location of oo resources:
+IOT_Challenge2/common/protocol.h
+IOT_Challenge2/common/protocol.cpp
+
 Build instructions:
 1. Clone IOT_Challenge2 repo
 2. Cd into IOT_Challenge2/packets
